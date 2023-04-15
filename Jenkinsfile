@@ -10,8 +10,11 @@ pipeline{
 
                 script{
                     
-                    git branch: 'main', url: 'https://github.com/nathanxa/devopslab.git'
-                    
+                    gitCheckout(
+                        branch: "main"
+                        url: "https://github.com/nathanxa/devopslab.git"
+                    )
+                                        
                 }
             }
         }
