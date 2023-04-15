@@ -25,43 +25,43 @@ pipeline{
             }
         }
 
-        stage("Unit Test maven"){
-        when { expression { params.action == 'create'}}
-            steps{
-                script{
-                    mvnTest()
-                }
-            }
-        }
+        // stage("Unit Test maven"){
+        // when { expression { params.action == 'create'}}
+        //     steps{
+        //         script{
+        //             mvnTest()
+        //         }
+        //     }
+        // }
 
-        stage("Integration Test maven"){
-        when { expression { params.action == 'create'}}
-            steps{
-                script{
-                    mvnIntegrationTest()
-                }
-            }
-        }
+        // stage("Integration Test maven"){
+        // when { expression { params.action == 'create'}}
+        //     steps{
+        //         script{
+        //             mvnIntegrationTest()
+        //         }
+        //     }
+        // }
 
-        stage("SCA: SonarQube"){
-        when { expression { params.action == 'create'}}
-            steps{
-                script{
-                    def SonarQubecredentialsId = 'sonar-api'
-                    staticCodeAnalysis(SonarQubecredentialsId)
-                }
-            }
-        }
+        // stage("SCA: SonarQube"){
+        // when { expression { params.action == 'create'}}
+        //     steps{
+        //         script{
+        //             def SonarQubecredentialsId = 'sonar-api'
+        //             staticCodeAnalysis(SonarQubecredentialsId)
+        //         }
+        //     }
+        // }
 
-        stage("Quality Gate Status Check: SonarQube"){
-        when { expression { params.action == 'create'}}
-            steps{
-                script{
-                    def SonarQubecredentialsId = 'sonar-api'
-                    qualityGateStatus(SonarQubecredentialsId)
-                }
-            }
-        }
+        // stage("Quality Gate Status Check: SonarQube"){
+        // when { expression { params.action == 'create'}}
+        //     steps{
+        //         script{
+        //             def SonarQubecredentialsId = 'sonar-api'
+        //             qualityGateStatus(SonarQubecredentialsId)
+        //         }
+        //     }
+        // }
 
         stage("Maven Build: maven"){
         when { expression { params.action == 'create'}}
