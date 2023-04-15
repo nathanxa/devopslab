@@ -9,17 +9,11 @@ pipeline{
         stage("Git Checkout"){
 
             steps{
-
-                script{
-                    
-                    gitCheckout(
-                        branch: "main"
-                        url: "https://github.com/nathanxa/devopslab.git"
-                    )
-                                        
-                }
+            gitCheckout(
+                branch: "main",
+                url: "https://github.com/nathanxa/devopslab.git"
+            )
             }
         }
-
     }
 }
