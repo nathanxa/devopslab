@@ -7,9 +7,9 @@ pipeline{
     parameters{
 
         choice(name: 'action', choices: 'create\ndelete', description: 'Choose create/Destory')
-        string(name: 'ImageName', description: "name of the docker build", defaultValue: 'javapp')
-        string(name: 'ImageTag', description: "Tag of the docker build", defaultValue: 'v1')
-        string(name: 'DockerHubUser', description: "name of the Application", defaultValue: 'nathanxa')
+        string(name: 'aws_account_id', description: "name of the AWS Account ID", defaultValue: '496157679619')
+        string(name: 'Region', description: "Region of Region", defaultValue: 'us')
+        string(name: 'ECR_Repo_Name', description: "name of the ECR Repo", defaultValue: 'nathanxa')
     }
 
     stages {
@@ -72,7 +72,47 @@ pipeline{
             }
         }
 
-        
+        stage("Docker Image Build : ECR"){
+        when { expression { params.action == 'create'}}
+            steps{
+                script{
+
+                    dockerBuild("${params.aws_account_id}","${params.Region}","${params.ECR_Repo_Name}")
+                }
+            }
+        }
+
+        stage("Docker Image Scan: Trivy"){
+        when { expression { params.action == 'create'}}
+            steps{
+                script{
+
+                    dockerImageScan("${params.aws_account_id}","${params.Region}","${params.ECR_Repo_Name}")
+                }
+            }
+        }
+
+        stage("Docker Image Push: Docker Hub"){
+        when { expression { params.action == 'create'}}
+            steps{
+                script{
+
+                    dockerImagePush("${params.aws_account_id}","${params.Region}","${params.ECR_Repo_Name}")
+                }
+            }
+        }
+
+        stage("Docker Image Clean: Docker Hub"){
+        when { expression { params.action == 'create'}}
+            steps{
+                script{
+
+                    dockerImageCleanup("${params.aws_account_id}","${params.Region}","${params.ECR_Repo_Name}")
+                }
+            }
+        }
+
+
     }
 
 }
