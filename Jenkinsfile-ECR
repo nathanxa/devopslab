@@ -10,6 +10,13 @@ pipeline{
         string(name: 'aws_account_id', description: "name of the AWS Account ID", defaultValue: '496157679619')
         string(name: 'Region', description: "Region of Region", defaultValue: 'us')
         string(name: 'ECR_Repo_Name', description: "name of the ECR Repo", defaultValue: 'nathanxa')
+
+    }
+
+    environment{
+
+        ACESS_KEY = credentials('AWS_ACCESS_KEY_ID')
+        SECRET_KEY = credentials('AWS_SECRET_KEY_ID')
     }
 
     stages {
@@ -112,6 +119,20 @@ pipeline{
             }
         }
 
+        stage("Create EKS Cluster : Terraform"){
+        when { expression { params.action == 'create'}}
+            steps{
+                script{
+                    dir('eks_module') {
+                        sh """
+                        terraform init
+                        terraform plan -var 'accees_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars
+                        terraform apply -var 'accees_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' -var 'region=${params.Region}' --var-file=./config/terraform.tfvars --auto=approve
+                        """
+                    }                
+                }
+            }
+        }
 
     }
 
